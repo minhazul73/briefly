@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'app_colors.dart';
 
 /// Central theme configuration — Material 3, single light theme.
@@ -34,6 +35,10 @@ class AppTheme {
       // ── AppBar ──────────────────────────────────────────────────────────
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.black12, // Subtle contrast against the bg
+          statusBarIconBrightness: Brightness.dark,
+        ),
         elevation: 0,
         scrolledUnderElevation: 1,
         centerTitle: false,

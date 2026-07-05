@@ -28,47 +28,73 @@ class NotesListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Notes')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openSheet(context),
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('New Note'),
-        heroTag: 'fab_new_note',
-      ),
-      body: Consumer<NotesProvider>(
-        builder: (context, provider, _) {
-          // Stream-level error toast
-          if (provider.errorMessage != null && !provider.isSaving) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
-              provider.clearError();
-            });
-          }
+    return Consumer<NotesProvider>(
+      builder: (context, provider, _) {
+        // Stream-level error toast
+        if (provider.errorMessage != null && !provider.isSaving) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(provider.errorMessage!)));
+            provider.clearError();
+          });
+        }
 
-          final Widget body;
-          if (provider.isLoading) {
-            body = const NotesListLoading(key: ValueKey('loading'));
-          } else if (provider.notes.isEmpty) {
-            body = const EmptyNotesView(key: ValueKey('empty'));
-          } else {
-            body = _NotesList(
-              key: const ValueKey('list'),
-              notes: provider.notes,
-              onEdit: (note) => _openSheet(context, note: note),
-            );
-          }
+        final Widget body;
+        if (provider.isLoading) {
+          body = const NotesListLoading(key: ValueKey('loading'));
+        } else if (provider.notes.isEmpty) {
+          body = const EmptyNotesView(key: ValueKey('empty'));
+        } else {
+          body = _NotesList(
+            key: const ValueKey('list'),
+            notes: provider.notes,
+            onEdit: (note) => _openSheet(context, note: note),
+          );
+        }
 
-          return AnimatedSwitcher(
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('My Notes'),
+            actions: [
+              if (!provider.isLoading)
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Chip(
+                    label: Text(
+                      '${provider.notes.length}',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    side: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.3),
+                      width: 2,
+                    ),
+                    shape: const StadiumBorder(),
+                  ),
+                ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () => _openSheet(context),
+            icon: const Icon(Icons.add_rounded),
+            label: const Text('New Note'),
+            heroTag: 'fab_new_note',
+          ),
+          body: AnimatedSwitcher(
             duration: AppMotion.medium,
             switchInCurve: AppMotion.curve,
             switchOutCurve: AppMotion.curve,
             child: body,
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -126,7 +152,9 @@ class _NoteSheetState extends State<_NoteSheet> {
   void initState() {
     super.initState();
     _titleCtrl = TextEditingController(text: widget.existingNote?.title ?? '');
-    _descCtrl = TextEditingController(text: widget.existingNote?.description ?? '');
+    _descCtrl = TextEditingController(
+      text: widget.existingNote?.description ?? '',
+    );
   }
 
   @override
@@ -153,7 +181,9 @@ class _NoteSheetState extends State<_NoteSheet> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.errorMessage ?? 'Something went wrong.')),
+        SnackBar(
+          content: Text(provider.errorMessage ?? 'Something went wrong.'),
+        ),
       );
     }
   }
@@ -198,7 +228,9 @@ class _NoteSheetState extends State<_NoteSheet> {
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.close_rounded),
-                  style: IconButton.styleFrom(foregroundColor: cs.onSurfaceVariant),
+                  style: IconButton.styleFrom(
+                    foregroundColor: cs.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -216,8 +248,9 @@ class _NoteSheetState extends State<_NoteSheet> {
                     label: 'Title',
                     hint: 'Give your note a title',
                     textInputAction: TextInputAction.next,
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty) ? 'Title is required' : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Title is required'
+                        : null,
                   ),
                   const SizedBox(height: 14),
                   NoteFormField(
