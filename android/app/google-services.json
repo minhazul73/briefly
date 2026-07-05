@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "645565487850",
+    "project_id": "briefly-baba3",
+    "storage_bucket": "briefly-baba3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645565487850:android:90c1b8a866200b053b5593",
+        "android_client_info": {
+          "package_name": "com.example.briefly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY3wgjHz6w_FiuxRsSAs662F8-RcLOcvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
