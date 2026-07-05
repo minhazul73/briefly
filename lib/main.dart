@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+import 'providers/notes_provider.dart';
+import 'theme/app_theme.dart';
+import 'screens/notes_list_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const BrieflyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BrieflyApp extends StatelessWidget {
+  const BrieflyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+    return ChangeNotifierProvider(
+      create: (_) => NotesProvider(),
+      child: MaterialApp(
+        title: 'Briefly',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: const NotesListScreen(),
       ),
     );
   }
